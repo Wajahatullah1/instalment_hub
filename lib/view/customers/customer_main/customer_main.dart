@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:installment_hub/constraints/app_materials/app_colors.dart';
 import 'package:installment_hub/constraints/app_materials/size.dart';
 import 'package:installment_hub/view/customers/add_customer/add_customer.dart';
 import 'package:installment_hub/view/customers/customer_detail/customer_detail_page.dart';
-
 import '../../../constraints/app_materials/media_query.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/top_app_bar.dart';
@@ -23,78 +20,33 @@ class _CustomerMainPageState extends State<CustomerMainPage> {
   Widget build(BuildContext context) {
     final mq = MediaQuerySize(context);
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
               _buildHeader(mq),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search you customers here...'
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-              ),
-
-              // Content goes here - can be any widget, e.g., a ListView, text, images, etc.
+              _buildSearchBar(),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ListView.builder(
-                        itemCount: 10,
-                         shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                               borderRadius: BorderRadius.circular(7)
-                            ),
-                                margin: EdgeInsets.all(6),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text('Muhammad Abbas',style: TextStyle(
-                                        fontSize: mq.total*0.015,color: Colors.black38
-                                      ),),
-                                      IconButton(onPressed: (){
-                                        Get.to(CustomerDetailScreen());
-                                      }, icon: Icon(Icons.arrow_forward_ios_outlined, color: AppColors().blueColor,))
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },)
-                      // Example content
-
-                      // Add more content widgets as needed
-                    ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: 10,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildCustomerCard(mq);
+                    },
                   ),
                 ),
               ),
-
-              // The InkWell button at the bottom
-              CustomButton(title: 'Add New Customer',onTap: (){
-                   Get.to(AddCusomers());
-              },),
+              CustomButton(
+                title: 'Add New Customer',
+                onTap: () => Get.to(AddCusomers()),
+                isIconVisible: true,
+                isLoaderTrue: true,
+                color: Colors.blueAccent,
+                textColor: Colors.white,
+              ),
             ],
           ),
         ),
@@ -115,6 +67,89 @@ Widget _buildHeader(MediaQuerySize mq) {
         heading: 'Customers',
         subTitle: 'Manage Your Customers here!',
       ),
+    ),
+  );
+}
+
+Widget _buildSearchBar() {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          )
+        ],
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'Search your customers here...',
+          prefixIcon: Icon(Icons.search, color: AppColors().blueColor),
+          contentPadding: EdgeInsets.symmetric(vertical: 15),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _buildCustomerCard(MediaQuerySize mq) {
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 6),
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.blueAccent, AppColors().skyblue],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.blueAccent.withOpacity(0.3),
+          blurRadius: 10,
+          offset: Offset(0, 4),
+        )
+      ],
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Muhammad Abbas',
+              style: TextStyle(
+                fontSize: mq.total * 0.018,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 5),
+            Text(
+              'Customer ID: 12345',
+              style: TextStyle(
+                fontSize: mq.total * 0.012,
+                color: Colors.white70,
+              ),
+            ),
+          ],
+        ),
+        IconButton(
+          onPressed: () => Get.to(CustomerDetailScreen()),
+          icon: Icon(
+            Icons.arrow_forward_ios_outlined,
+            color: Colors.white,
+          ),
+        ),
+      ],
     ),
   );
 }

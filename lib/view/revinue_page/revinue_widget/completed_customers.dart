@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:installment_hub/constraints/app_materials/size.dart';
 import '../../../constraints/app_materials/app_colors.dart';
 import '../../../constraints/app_materials/media_query.dart';
+
 class CompletedCustomer extends StatefulWidget {
   const CompletedCustomer({super.key});
 
@@ -13,50 +14,66 @@ class _CompletedCustomerState extends State<CompletedCustomer> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuerySize(context);
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text('Completed customers',style: TextStyle(
-                  fontSize: mq.total*0.014,fontWeight: FontWeight.bold,fontFamily: 'Inter',color: AppColors().blueColor
-              ),),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              'Completed Customers',
+              style: TextStyle(
+                fontSize: mq.total * 0.018,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Inter',
+                color: AppColors().blueColor,
+              ),
             ),
-            (mq.height*0.03).toHeight,
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: 3,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: mq.total*0.008, horizontal:  mq.total*0.008,),
-                        color: Colors.grey[200],
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text('Muhammad Abbas'),
-                              Text('Status: Completed'),
-                              IconButton(onPressed: (){}, icon:Icon(Icons.delete_forever,color: Colors.red,))
-                            ],
-                          ),
-                        ),
-                      ),
-                      (mq.height*0.01).toHeight,
-                    ],
-                  );
-                },),
-            )
-          ],
-        ),
+          ),
+          (mq.height * 0.03).toHeight,
+          ListView.builder(
+            itemCount: 3,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                elevation: 3,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: mq.total * 0.01,
+                    horizontal: mq.total * 0.02,
+                  ),
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors().lightBlueColor,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  title: Text(
+                    'Muhammad Abbas',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: mq.total * 0.016,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Status: Completed',
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.delete_forever, color: Colors.red),
+                  ),
+                ),
+              );
+            },
+          )
+        ],
       ),
     );
   }

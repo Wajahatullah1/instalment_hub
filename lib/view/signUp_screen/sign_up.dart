@@ -9,6 +9,9 @@ import 'package:installment_hub/models/users/users.dart';
 import 'package:installment_hub/services/fire_base_auth.dart';
 import 'package:installment_hub/view/login_screen/login_screen.dart';
 
+import '../../widgets/custom_button.dart';
+import '../../widgets/login_form_fields.dart';
+
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -46,6 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
               bottom: 0,
               left: 0,
               right: 0,
+              top: 180,
               child: _buildBottom(),
             ),
           ],
@@ -57,64 +61,80 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _buildTop() {
     return Container(
       width: mediaSize.width,
-      decoration: BoxDecoration(
-            color: AppColors().greyColor,
-          image: DecorationImage(
-            opacity: 3.6,
-              scale: 1.5,
-              image: AssetImage(
-                '',
-
-              ),fit: BoxFit.cover)
+      height: mediaSize.height * 0.3,
+      decoration: BoxDecoration(color: AppColors().blueColor),
+      child: const Center(
+        child: Text(
+          'SIGNUP',
+          style: TextStyle(
+              color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+        ),
       ),
-      child: Image.asset('assets/images/electronics.jpg'),
     );
   }
 
   Widget _buildBottom() {
-    return SizedBox(
-      width: mediaSize.width,
-      child: Card(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            )),
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: _buildForm(),
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: mediaSize.width,
+        child: Card(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              )),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 20),
+            child: _buildForm(),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Welcome",
-          style: TextStyle(
-              color:  AppColors().lightBlueColor, fontSize: 32, fontWeight: FontWeight.w500),
-        ),
-        _buildGreyText("Please login with your information"),
-        const SizedBox(height: 30),
-        _buildGreyText("Name"),
-        _buildInputField(nameController),
-        const SizedBox(height: 10),
-        _buildGreyText("Email"),
-        _buildInputField(emailController, ),
-        const SizedBox(height: 10),
-        _buildGreyText("Phone No"),
-        _buildInputField(phoneController,),
-        const SizedBox(height: 10),
-        _buildGreyText("Password"),
-        _buildInputField(passwordController,),
-        const SizedBox(height: 10),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 60),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LoginFormField(
+            controller: emailController,
+            hintText: 'Email',
+            placeHolder: '',
+            isPassword: false,
+            prefixIcon: Icon(Icons.email_outlined),
+          ),
+          const SizedBox(height: 40),
+          LoginFormField(
+            controller: nameController,
+            hintText: 'Name',
+            placeHolder: '',
+            isPassword: false,
+            prefixIcon: Icon(Icons.person_2_outlined),
+          ),  const SizedBox(height: 40),
+          LoginFormField(
+            controller: phoneController,
+            hintText: 'Phone',
+            placeHolder: '',
+            isPassword: false,
+            prefixIcon: Icon(Icons.phone),
+          ),
+          const SizedBox(height: 40),
+          LoginFormField(
+            controller: passwordController,
+            hintText: 'Password',
+            placeHolder: '',
+            isPassword: true,
+            prefixIcon: Icon(Icons.lock_outline),
+          ),
 
-        _buildLoginButton(),
-        const SizedBox(height: 20),
-      ],
+          const SizedBox(height: 20),
+          _buildLoginButton(),
+          const SizedBox(height: 20),
+          _buildSignUpButton(),
+        ],
+      ),
     );
   }
 
@@ -125,33 +145,50 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _buildInputField(TextEditingController controller,
-      {isPassword = false}) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        suffixIcon: isPassword ? Icon(Icons.remove_red_eye) : Icon(Icons.done),
+  Widget _buildRememberForgot() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildGreyText("Remember me"),
+            Icon(Icons.arrow_forward, color: AppColors().greyColor,),
+            Checkbox(
+                value: rememberUser,
+                onChanged: (value) {
+                  setState(() {
+                    rememberUser = value!;
+                  });
+                }),
+          ]
       ),
-      obscureText: isPassword,
     );
   }
 
-
   Widget _buildLoginButton() {
-    return ElevatedButton(
-      onPressed: () {
-        debugPrint("Email : ${emailController.text}");
-        debugPrint("Password : ${passwordController.text}");
+    return CustomButton(
+      title: 'Sign Up',
+      textColor: Colors.white,
+      color: AppColors().blueColor,
+      onTap: () {
         _signUp();
       },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors().lightBlueColor,
-        shape: const StadiumBorder(),
-        elevation: 20,
-        shadowColor: AppColors().lightBlueColor,
-        minimumSize: const Size.fromHeight(60),
-      ),
-      child: const Text("SIGNUP"),
+      isIconVisible: false,
+      isLoaderTrue: true,
+    );
+  }
+
+  Widget _buildSignUpButton() {
+    return CustomButton(
+      title: 'Login',
+      textColor: Colors.white,
+      color: AppColors().greyColor,
+      onTap: () {
+        Get.to(LoginPage());
+      },
+      isIconVisible: false,
+      isLoaderTrue: true,
     );
   }
 

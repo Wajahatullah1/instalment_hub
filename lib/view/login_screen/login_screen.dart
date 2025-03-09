@@ -5,6 +5,10 @@ import 'package:installment_hub/constraints/app_materials/app_colors.dart';
 import 'package:installment_hub/services/fire_base_auth.dart';
 import 'package:installment_hub/view/main_screen.dart';
 import 'package:installment_hub/view/signUp_screen/sign_up.dart';
+import 'package:installment_hub/widgets/custom_button.dart';
+
+import '../../widgets/login_form_fields.dart';
+import '../introduction_screen/introduction_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool rememberUser = false;
- final FirebaseAuthServices _authServices = FirebaseAuthServices();
+  final FirebaseAuthServices _authServices = FirebaseAuthServices();
   @override
   Widget build(BuildContext context) {
     myColor = Theme.of(context).primaryColor;
@@ -39,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
               bottom: 0,
               left: 0,
               right: 0,
+              top: 180,
               child: _buildBottom(),
             ),
           ],
@@ -50,56 +55,66 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildTop() {
     return Container(
       width: mediaSize.width,
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(
-                '',
-
-              ),fit: BoxFit.cover)
+      height: mediaSize.height * 0.3,
+      decoration: BoxDecoration(color: AppColors().blueColor),
+      child: const Center(
+        child: Text(
+          'LOGIN',
+          style: TextStyle(
+              color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+        ),
       ),
-      child: Image.asset('assets/images/electronics.jpg'),
     );
   }
 
   Widget _buildBottom() {
-    return SizedBox(
-      width: mediaSize.width,
-      child: Card(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            )),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: _buildForm(),
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: mediaSize.width,
+        child: Card(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(40),
+            topRight: Radius.circular(40),
+          )),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 20),
+            child: _buildForm(),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Welcome",
-          style: TextStyle(
-              color: AppColors().blueColor, fontSize: 32, fontWeight: FontWeight.w500),
-        ),
-        _buildGreyText("Please login with your information"),
-        const SizedBox(height: 60),
-        _buildGreyText("Email address"),
-        _buildInputField(emailController),
-        const SizedBox(height: 40),
-        _buildGreyText("Password"),
-        _buildInputField(passwordController, isPassword: true),
-        const SizedBox(height: 20),
-        _buildRememberForgot(),
-        const SizedBox(height: 20),
-        _buildLoginButton(),
-        const SizedBox(height: 20),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 60),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LoginFormField(
+            controller: emailController,
+            hintText: 'Email',
+            placeHolder: '',
+            isPassword: false,
+            prefixIcon: Icon(Icons.email_outlined),
+          ),
+          const SizedBox(height: 40),
+          LoginFormField(
+            controller: passwordController,
+            hintText: 'Password',
+            placeHolder: '',
+            isPassword: true,
+            prefixIcon: Icon(Icons.lock_outline_rounded),
+          ),
+          const SizedBox(height: 20),
+          _buildRememberForgot(),
+          const SizedBox(height: 20),
+          _buildLoginButton(),
+          const SizedBox(height: 20),
+          _buildSignUpButton(),
+        ],
+      ),
     );
   }
 
@@ -110,68 +125,63 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildInputField(TextEditingController controller,
-      {isPassword = false}) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        suffixIcon: isPassword ? Icon(Icons.remove_red_eye) : Icon(Icons.done),
-      ),
-      obscureText: isPassword,
-    );
-  }
-
   Widget _buildRememberForgot() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Checkbox(
-                value: rememberUser,
-                onChanged: (value) {
-                  setState(() {
-                    rememberUser = value!;
-                  });
-                }),
-            _buildGreyText("Remember me"),
-          ],
-        ),
-        TextButton(
-            onPressed: () {
-              Get.to(SignUpPage());
-
-            }, child: _buildGreyText("Dont, have an account?SignUp"))
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildGreyText("Remember me"),
+           Icon(Icons.arrow_forward, color: AppColors().greyColor,),
+          Checkbox(
+          value: rememberUser,
+          onChanged: (value) {
+            setState(() {
+              rememberUser = value!;
+            });
+          }),
+         ]
+      ),
     );
   }
 
   Widget _buildLoginButton() {
-    return ElevatedButton(
-      onPressed: () {
-        debugPrint("Email : ${emailController.text}");
-        debugPrint("Password : ${passwordController.text}");
+    return CustomButton(
+      title: 'Login',
+      textColor: Colors.white,
+      color: AppColors().blueColor,
+      onTap: () {
         _login();
       },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors().lightBlueColor,
-        shape: const StadiumBorder(),
-        elevation: 20,
-        shadowColor: AppColors().lightBlueColor,
-        minimumSize: const Size.fromHeight(60),
-      ),
-      child: const Text("LOGIN"),
+      isIconVisible: false,
+      isLoaderTrue: true,
     );
   }
-  void _login ()async{
+
+  Widget _buildSignUpButton() {
+    return CustomButton(
+      title: 'Sign Up',
+      textColor: Colors.white,
+      color: AppColors().greyColor,
+      onTap: () {
+        Get.to(SignUpPage());
+       },
+      isIconVisible: false,
+      isLoaderTrue: true,
+    );
+  }
+
+  void _login() async {
     String email = emailController.text;
     String password = passwordController.text;
-    User? user  = await  _authServices.signInWithEmailAndPassword(email, password);
-    if(user!= null){
-      Get.to(MainPage());
-    }else{
+    User? user =
+        await _authServices.signInWithEmailAndPassword(email, password);
+    if (user != null) {
+
+      Get.to(OnBoardingPage());
+    } else {
       print('please sigup first ');
     }
   }
-
 }

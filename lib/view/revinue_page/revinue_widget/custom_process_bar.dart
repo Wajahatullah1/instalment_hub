@@ -27,16 +27,14 @@ class _CustomCircularProgressBarState extends State<CustomCircularProgressBar>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2), // Animation duration
+      duration: const Duration(seconds: 2),
     );
 
-    // Tween from 0.0 to the target progress
-    _animation = Tween<double>(begin: 0.0, end: widget.progress).animate(_controller)
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut)
       ..addListener(() {
         setState(() {});
       });
 
-    // Start the animation
     _controller.forward();
   }
 
@@ -49,14 +47,18 @@ class _CustomCircularProgressBarState extends State<CustomCircularProgressBar>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
-      height: 100,
+      width: 120,
+      height: 120,
       child: CustomPaint(
-        painter: _CircularProgressDotPainter(_animation.value, widget.color, widget.totalDots),
+        painter: _CircularProgressDotPainter(
+            _animation.value, widget.color, widget.totalDots),
         child: Center(
           child: Text(
-            "${(_animation.value * 100).toInt()}%", // Show animated percentage text
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            "${(_animation.value * 100).toInt()}%",
+            style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black),
           ),
         ),
       ),
@@ -76,20 +78,20 @@ class _CircularProgressDotPainter extends CustomPainter {
     Paint backgroundPaint = Paint()
       ..color = Colors.grey[300]!
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 10.0;
+      ..strokeWidth = 10.0
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 4);
 
     double radius = size.width / 2;
     Offset center = Offset(size.width / 2, size.height / 2);
 
-    // Draw the background circle
     canvas.drawCircle(center, radius, backgroundPaint);
 
-    // Paint for the dots
     Paint dotPaint = Paint()
-      ..color = color
+      ..shader = LinearGradient(
+        colors: [Colors.blueAccent, Colors.cyanAccent],
+      ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.fill;
 
-    // Draw the progress dots
     double angleIncrement = 2 * pi / totalDots;
     int dotsToShow = (totalDots * progress).ceil();
 
@@ -98,13 +100,20 @@ class _CircularProgressDotPainter extends CustomPainter {
       double x = center.dx + radius * cos(angle);
       double y = center.dy + radius * sin(angle);
 
-      // Draw a dot
-      canvas.drawCircle(Offset(x, y), 5.0, dotPaint);
+      canvas.drawCircle(Offset(x, y), 6.0, dotPaint);
+
+      if (i == dotsToShow - 1) {
+        Paint glowPaint = Paint()
+          ..color = Colors.blueAccent.withOpacity(0.5)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.outer, 10);
+
+        canvas.drawCircle(Offset(x, y), 8.0, glowPaint);
+      }
     }
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true; // Repaint whenever progress changes
+    return true;
   }
 }

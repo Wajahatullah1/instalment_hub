@@ -28,11 +28,11 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      Customer_cart_detail(heading: 'Personal Information'),
-                      Customer_cart_detail(heading: 'Evidence No 1'),
-                      Customer_cart_detail(heading: 'Evidence No 2'),
-                      Customer_cart_detail(heading: 'Product Detail'),
-                      Customer_cart_detail(heading: 'Installment Detail'),
+                      CustomerCartDetail(heading: 'Personal Information'),
+                      CustomerCartDetail(heading: 'Evidence No 1'),
+                      CustomerCartDetail(heading: 'Evidence No 2'),
+                      CustomerCartDetail(heading: 'Product Detail'),
+                      CustomerCartDetail(heading: 'Installment Detail'),
                     ],
                   ),
                 ),
