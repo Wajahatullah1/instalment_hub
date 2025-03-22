@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:installment_hub/bloc/customer_bloc/customer_bloc.dart';
+import 'package:installment_hub/bloc/customer_bloc/customer_event.dart';
+import 'package:installment_hub/bloc/customer_bloc/customer_state.dart';
 import 'package:installment_hub/constraints/app_materials/app_colors.dart';
 import 'package:installment_hub/constraints/app_materials/size.dart';
+import 'package:installment_hub/models/customers/customers.dart';
 import 'package:installment_hub/view/customers/add_customer/add_customer.dart';
 import 'package:installment_hub/view/customers/customer_detail/customer_detail_page.dart';
 import '../../../constraints/app_materials/media_query.dart';
@@ -31,10 +36,22 @@ class _CustomerMainPageState extends State<CustomerMainPage> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _buildCustomerCard(mq);
+                  child: BlocBuilder<CustomerBloc, CustomerState>(
+                    builder: (context, state) {
+                      if (state is CustomerLoadingState) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (state is CustomerCompleteState) {
+                        return ListView.builder(
+                          itemCount: state.customers.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildCustomerCard(state.customers[index], mq);
+                          },
+                        );
+                      } else if (state is CustomerErrorState) {
+                        return Center(child: Text(state.errorMessage));
+                      } else {
+                        return Center(child: Text('No customers found'));
+                      }
                     },
                   ),
                 ),
@@ -99,57 +116,60 @@ Widget _buildSearchBar() {
   );
 }
 
-Widget _buildCustomerCard(MediaQuerySize mq) {
-  return Container(
-    margin: const EdgeInsets.symmetric(vertical: 6),
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Colors.blueAccent, AppColors().skyblue],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
+Widget _buildCustomerCard(CustomerModel customer, MediaQuerySize mq) {
+  return InkWell(
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blueAccent, AppColors().skyblue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueAccent.withOpacity(0.3),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          )
+        ],
       ),
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.blueAccent.withOpacity(0.3),
-          blurRadius: 10,
-          offset: Offset(0, 4),
-        )
-      ],
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Muhammad Abbas',
-              style: TextStyle(
-                fontSize: mq.total * 0.018,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                customer.customerName,
+                style: TextStyle(
+                  fontSize: mq.total * 0.018,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 5),
-            Text(
-              'Customer ID: 12345',
-              style: TextStyle(
-                fontSize: mq.total * 0.012,
-                color: Colors.white70,
+              SizedBox(height: 5),
+              Text(
+                'Customer ID: ${customer.idCardNumber}',
+                style: TextStyle(
+                  fontSize: mq.total * 0.012,
+                  color: Colors.white70,
+                ),
               ),
-            ),
-          ],
-        ),
-        IconButton(
-          onPressed: () => Get.to(CustomerDetailScreen()),
-          icon: Icon(
-            Icons.arrow_forward_ios_outlined,
-            color: Colors.white,
+            ],
           ),
-        ),
-      ],
+          IconButton(
+            onPressed: () => Get.to(CustomerDetailScreen(model: customer,)),
+            icon: Icon(
+              Icons.arrow_forward_ios_outlined,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
     ),
+    onTap:()=>Get.to(CustomerDetailScreen(model: customer,)),
   );
 }

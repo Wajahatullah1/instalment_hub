@@ -6,4 +6,8 @@ abstract class CustomerEvent {}
    final CustomerModel model ;
      LoadCustomerEvent(this.model);
  }
+ class LoadCustomerEventList extends CustomerEvent {
+   final String managerId;
+   LoadCustomerEventList(this.managerId);
+ }
  

@@ -23,7 +23,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   // Handler for UpdateUserEvent
-  Future<void> _onUpdateUserEvent(UpdateUserEvent event, Emitter<UserState> emit) async {
+  Future<void> getCustomers(UpdateUserEvent event, Emitter<UserState> emit) async {
     emit(UserLoadingState());
     try {
       await UserRepository().updateUser(event.user);

@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:installment_hub/constraints/app_materials/app_colors.dart';
 import 'package:installment_hub/constraints/app_materials/media_query.dart';
 import 'package:installment_hub/constraints/app_materials/size.dart';
+import 'package:installment_hub/models/customers/customers.dart';
 import 'package:installment_hub/view/customers/add_customer/add_customer.dart';
 
 class CustomerCartDetail extends StatefulWidget {
   final String heading;
-  const CustomerCartDetail({super.key, required this.heading});
+  final CustomerModel model;
+  const CustomerCartDetail({super.key, required this.heading, required this.model});
 
   @override
   State<CustomerCartDetail> createState() => _CustomerCartDetailState();
@@ -39,7 +41,7 @@ class _CustomerCartDetailState extends State<CustomerCartDetail> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Muhammad Abbas',
+                          widget.model.customerName,
                           style: TextStyle(
                             fontSize: mq.total * 0.022,
                             fontWeight: FontWeight.bold,
@@ -54,11 +56,46 @@ class _CustomerCartDetailState extends State<CustomerCartDetail> {
                     ),
                     Divider(color: Colors.grey.shade300, thickness: 1),
                     const SizedBox(height: 10),
-                    _buildRow('Name:', 'Muhammad Abbas'),
-                    _buildRow('Email:', 'ab@gmail.com'),
-                    _buildRow('Phone:', '0335934343'),
-                    _buildRow('Address:', 'KOAHT, KDA'),
-                    _buildRow('ID:', '13323232329328392'),
+                    if(widget.heading=="Personal Information")
+                      Column(children: [
+                        _buildRow('Name:', widget.model.customerName),
+                        _buildRow('Email:', widget.model.email),
+                        _buildRow('Phone:', widget.model.phoneNo),
+                        _buildRow('Address:', widget.model.customerPostalAddress),
+                        _buildRow('ID:', widget.model.idCardNumber),
+                      ],),
+                    if(widget.heading!="Personal Information")
+                      ListView.builder(
+                        itemCount: widget.model.evidence.length,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return widget.heading=="Evidence"?
+                              Container():
+                            Column(
+                            children: [
+                              _buildRow('Name:', widget.model.evidence[index].evidenceName),
+                              _buildRow('Occupation:', widget.model.evidence[index].occupation),
+                              _buildRow('Id Card Number:', widget.model.evidence[index].evidenceIdcardNumber),
+                            ],
+                          );
+                        },
+                      ), if(widget.heading=='Product Detail' &&widget.heading!='Evidence')
+                      ListView.builder(
+                        itemCount: widget.model.products.length,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Column(
+                            children: [
+                              _buildRow('Name:', widget.model.products[index].productName),
+                              _buildRow('Installment Fee:', widget.model.products[index].installmentFee.toString()),
+                              _buildRow('Total Price:', widget.model.products[index].totalPrice.toString()),
+                              _buildRow('Total Price:', widget.model.products[index].productWarranty.toString()),
+                              _buildRow('Plan:', widget.model.plan),
+                              _buildRow('Plan:', widget.model.monthlyInstallmentFee),
+                            ],
+                          );
+                        },
+                      )
                   ],
                 ),
               ),

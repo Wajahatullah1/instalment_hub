@@ -50,9 +50,18 @@ class FirebaseAuthServices {
 
 
   Future<User?> signInWithEmailAndPassword(String email , String password) async{
+    SharedPreferences preferences =await SharedPreferences.getInstance();
 
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      if (credential.user != null) {
+        print('User created successfully with UID: ${credential.user!.uid}');
+       await preferences.setString('id', credential.user!.uid.toString());
+
+      } else {
+        print('Error: User is null after sign-up');
+        return null;
+      }
       return  credential.user;
     }catch(e){
       print('error$e');

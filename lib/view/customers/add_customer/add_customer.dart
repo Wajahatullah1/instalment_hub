@@ -10,6 +10,7 @@ import 'package:installment_hub/models/customers/customers.dart';
 import 'package:installment_hub/widgets/form_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../constraints/app_materials/media_query.dart';
 import '../../../widgets/custom_button.dart';
@@ -24,13 +25,64 @@ class AddCusomers extends StatefulWidget {
 }
 
 class _AddCusomersState extends State<AddCusomers> {
-  final TextEditingController name = TextEditingController();
-  int currentStep=0;
-  void decremnt(){
+  int currentStep = 0;
+
+  // Controllers for Step 0: Customer Details
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneNoController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController idCardNumberController = TextEditingController();
+  final TextEditingController productNameController = TextEditingController();
+  final TextEditingController planController = TextEditingController();
+  final TextEditingController advancePaymentController = TextEditingController();
+  final TextEditingController monthlyInstallmentFeeController = TextEditingController();
+  final TextEditingController customerLocationController = TextEditingController();
+  final TextEditingController customerPostalAddressController = TextEditingController();
+
+  // Controllers for Step 1: Add Evidence
+  final TextEditingController evidenceNameController = TextEditingController();
+  final TextEditingController evidencePhoneController = TextEditingController();
+  final TextEditingController evidenceIdCardController = TextEditingController();
+  final TextEditingController evidenceDesignationController = TextEditingController();
+  final TextEditingController evidenceOccupationController = TextEditingController();
+
+  // Controllers for Step 2: Add Product
+  final TextEditingController productNameStep2Controller = TextEditingController();
+  final TextEditingController productPriceController = TextEditingController();
+  final TextEditingController productBrandController = TextEditingController();
+  final TextEditingController productPlanController = TextEditingController();
+
+  void decrement() {
     setState(() {
-      currentStep --;
+      currentStep--;
     });
   }
+
+  @override
+  void dispose() {
+    // Dispose all controllers to avoid memory leaks
+    nameController.dispose();
+    phoneNoController.dispose();
+    emailController.dispose();
+    idCardNumberController.dispose();
+    productNameController.dispose();
+    planController.dispose();
+    advancePaymentController.dispose();
+    monthlyInstallmentFeeController.dispose();
+    customerLocationController.dispose();
+    customerPostalAddressController.dispose();
+    evidenceNameController.dispose();
+    evidencePhoneController.dispose();
+    evidenceIdCardController.dispose();
+    evidenceDesignationController.dispose();
+    evidenceOccupationController.dispose();
+    productNameStep2Controller.dispose();
+    productPriceController.dispose();
+    productBrandController.dispose();
+    productPlanController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuerySize(context);
@@ -50,56 +102,54 @@ class _AddCusomersState extends State<AddCusomers> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
+                    boxShadow: const [
+                    BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                    )
+                    ]
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if(currentStep==0)
-                       Column(
-                         children: [
-                           _buildSectionTitle('Customer Details'),
-                           _buildFormField('Name'),
-                           _buildFormField('Phone no'),
-                           _buildFormField('Email'),
-                           _buildFormField('Id Card Number'),
-                           _buildFormField('Product Name'),
-                           _buildFormField('Plan'),
-                           _buildFormField('Advance Payment'),
-                           _buildFormField('Monthly Installment fee'),
-                           _buildFormField('Customer Location'),
-                           _buildFormField('Customer Postal Address'),
-                         ],
-                       ),
-                     if(currentStep==1)
-                      Column(
-                        children: [
-                          _buildSectionTitle('Add Evidence'),
-                          _buildFormField('Evidence Name'),
-                          _buildFormField('Evidence Phone'),
-                          _buildFormField('Evidence Id Card'),
-                          _buildFormField('Evidence Designation'),
-                          _buildFormField('Evidence Occupation'),
-
-                        ],
-                      ),
-                       if(currentStep==2)
-                       Column(
-                         children: [
-                           _buildSectionTitle('Add Product'),
-                           _buildFormField('Product Name'),
-                           _buildFormField('Product Price'),
-                           _buildFormField('Product Brand'),
-                           _buildFormField('Product Plan'),
-                         ],
-                       )
-
+                      if (currentStep == 0)
+                        Column(
+                          children: [
+                            _buildSectionTitle('Customer Details'),
+                            _buildFormField('Name', nameController),
+                            _buildFormField('Phone no', phoneNoController),
+                            _buildFormField('Email', emailController),
+                            _buildFormField('Id Card Number', idCardNumberController),
+                            _buildFormField('Product Name', productNameController),
+                            _buildFormField('Plan', planController),
+                            _buildFormField('Advance Payment', advancePaymentController),
+                            _buildFormField('Monthly Installment fee', monthlyInstallmentFeeController),
+                            _buildFormField('Customer Location', customerLocationController),
+                            _buildFormField('Customer Postal Address', customerPostalAddressController),
+                          ],
+                        ),
+                      if (currentStep == 1)
+                        Column(
+                          children: [
+                            _buildSectionTitle('Add Evidence'),
+                            _buildFormField('Evidence Name', evidenceNameController),
+                            _buildFormField('Evidence Phone', evidencePhoneController),
+                            _buildFormField('Evidence Id Card', evidenceIdCardController),
+                            _buildFormField('Evidence Designation', evidenceDesignationController),
+                            _buildFormField('Evidence Occupation', evidenceOccupationController),
+                          ],
+                        ),
+                      if (currentStep == 2)
+                        Column(
+                          children: [
+                            _buildSectionTitle('Add Product'),
+                            _buildFormField('Product Name', productNameStep2Controller),
+                            _buildFormField('Product Price', productPriceController),
+                            _buildFormField('Product Brand', productBrandController),
+                            _buildFormField('Product Plan', productPlanController),
+                          ],
+                        ),
                     ],
                   ),
                 ),
@@ -109,12 +159,11 @@ class _AddCusomersState extends State<AddCusomers> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomSmallButton(
-                      title:"Previous",
+                      title: "Previous",
                       onTap: () async {
-                        if(currentStep>0){
-                          decremnt();
+                        if (currentStep > 0) {
+                          decrement();
                         }
-
                       },
                       color: Colors.blueAccent,
                       textColor: Colors.white,
@@ -124,59 +173,58 @@ class _AddCusomersState extends State<AddCusomers> {
                     BlocBuilder<CustomerBloc, CustomerState>(
                       builder: (context, state) {
                         return CustomSmallButton(
-                          title: currentStep!=2?'Next':"Submit",
+                          title: currentStep != 2 ? 'Next' : "Submit",
                           onTap: () async {
-                            if(currentStep==0){
+                            if (currentStep == 0) {
                               setState(() {
-                                currentStep=1;
+                                currentStep = 1;
                               });
-                            }
-                            else if(currentStep==1){
+                            } else if (currentStep == 1) {
                               setState(() {
-                                currentStep=2;
+                                currentStep = 2;
                               });
-                            }
-                         else{
+                            } else {
                               SharedPreferences prefs = await SharedPreferences.getInstance();
-                              var id = prefs.getString('id').toString();
+                              String? id =  prefs.getString('id');
+                              final Uuid uuid = Uuid();
+
 
                               CustomerModel model = CustomerModel(
-                                userId: 0,
-                                customerId: id,
-                                customerName: 'wajahat',
-                                phoneNo: '03344554455',
-                                email: 'oso.wajahatullah@gmail.com',
-                                idCardNumber: '1430106271513',
-                                productName: 'Mobile redmi',
-                                plan: '12 month',
-                                advancePayment: '6000',
-                                monthlyInstallmentFee: '3000',
-                                customerLocation: 'koaht',
-                                customerPostalAddress: 'lachi kohat',
+                                userId:id!,
+                                customerId: uuid.v4(),
+                                customerName: nameController.text,
+                                phoneNo: phoneNoController.text,
+                                email: emailController.text,
+                                idCardNumber: idCardNumberController.text,
+                                productName: productNameController.text,
+                                plan: planController.text,
+                                advancePayment: advancePaymentController.text,
+                                monthlyInstallmentFee: monthlyInstallmentFeeController.text,
+                                customerLocation: customerLocationController.text,
+                                customerPostalAddress: customerPostalAddressController.text,
                                 products: [
                                   Product(
-                                    productId: 3,
-                                    productName: 'redmi',
+                                    productId: uuid.v4(),
+                                    productName: productNameStep2Controller.text,
                                     productWarranty: '1 year',
-                                    totalPrice: 56000,
+                                    totalPrice: double.parse(productPriceController.text),
                                     installmentFee: 3000,
                                   ),
                                 ],
                                 evidence: [
                                   Evidence(
-                                    evidenceId: 3,
-                                    evidenceName: 'shoaib',
-                                    evidenceIdcardNumber: '1345939433232',
+                                    evidenceId: uuid.v4(),
+                                    evidenceName: evidenceNameController.text,
+                                    evidenceIdcardNumber: evidenceIdCardController.text,
                                     idCardFrontImage: '3232',
                                     idCardBackImage: '3232',
-                                    designation: 'govt officor',
-                                    occupation: 'IT technician ',
+                                    designation: evidenceDesignationController.text,
+                                    occupation: evidenceOccupationController.text,
                                   ),
                                 ],
                               );
                               BlocProvider.of<CustomerBloc>(context).add(LoadCustomerEvent(model));
                             }
-
                           },
                           color: Colors.blueAccent,
                           textColor: Colors.white,
@@ -185,10 +233,8 @@ class _AddCusomersState extends State<AddCusomers> {
                         );
                       },
                     ),
-
                   ],
-                )
-
+                ),
               ],
             ),
           ),
@@ -227,19 +273,18 @@ class _AddCusomersState extends State<AddCusomers> {
     );
   }
 
-  Widget _buildFormField(String label) {
+  Widget _buildFormField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: FormFields(
         text: label,
         placeHolder: 'Enter $label',
         fucntion: () {},
-        controller: name,
+        controller: controller,
       ),
     );
   }
 }
-
 Widget _buildTimeLines(int currentStep) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 15.0),

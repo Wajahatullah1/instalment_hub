@@ -1,6 +1,6 @@
 class CustomerModel {
-  int userId;
-  String customerId;  // Unique ID for the customer
+  String userId;
+  String customerId; // Unique ID for the customer
   String customerName;
   String phoneNo;
   String email;
@@ -31,9 +31,10 @@ class CustomerModel {
     required this.evidence,
   });
 
+  // Convert the object to a map
   Map<String, dynamic> toMap() {
     return {
-       'userId':userId,
+      'userId': userId,
       'customerId': customerId,
       'customerName': customerName,
       'phoneNo': phoneNo,
@@ -49,9 +50,29 @@ class CustomerModel {
       'evidence': evidence.map((e) => e.toMap()).toList(),
     };
   }
+
+  // Create an object from a map
+  factory CustomerModel.fromMap(Map<String, dynamic> map, String customerId) {
+    return CustomerModel(
+      userId: map['userId'],
+      customerId: customerId,
+      customerName: map['customerName'],
+      phoneNo: map['phoneNo'],
+      email: map['email'],
+      idCardNumber: map['idCardNumber'],
+      productName: map['productName'],
+      plan: map['plan'],
+      advancePayment: map['advancePayment'],
+      monthlyInstallmentFee: map['monthlyInstallmentFee'],
+      customerLocation: map['customerLocation'],
+      customerPostalAddress: map['customerPostalAddress'],
+      products: List<Product>.from(map['products'].map((x) => Product.fromMap(x))),
+      evidence: List<Evidence>.from(map['evidence'].map((x) => Evidence.fromMap(x))),
+    );
+  }
 }
 class Product {
-  int productId;  // Unique ID for each product
+  String productId; // Unique ID for each product
   String productName;
   String productWarranty;
   double totalPrice;
@@ -65,6 +86,7 @@ class Product {
     required this.installmentFee,
   });
 
+  // Convert the object to a map
   Map<String, dynamic> toMap() {
     return {
       'productId': productId,
@@ -74,9 +96,20 @@ class Product {
       'installmentFee': installmentFee,
     };
   }
+
+  // Create an object from a map
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      productId: map['productId'],
+      productName: map['productName'],
+      productWarranty: map['productWarranty'],
+      totalPrice: map['totalPrice'],
+      installmentFee: map['installmentFee'],
+    );
+  }
 }
 class Evidence {
-  int evidenceId;  // Unique ID for each evidence
+  String evidenceId; // Unique ID for each evidence
   String evidenceName;
   String evidenceIdcardNumber;
   String idCardFrontImage;
@@ -94,6 +127,7 @@ class Evidence {
     required this.occupation,
   });
 
+  // Convert the object to a map
   Map<String, dynamic> toMap() {
     return {
       'evidenceId': evidenceId,
@@ -104,5 +138,18 @@ class Evidence {
       'designation': designation,
       'occupation': occupation,
     };
+  }
+
+  // Create an object from a map
+  factory Evidence.fromMap(Map<String, dynamic> map) {
+    return Evidence(
+      evidenceId: map['evidenceId'],
+      evidenceName: map['evidenceName'],
+      evidenceIdcardNumber: map['evidenceIdcardNumber'],
+      idCardFrontImage: map['idCardFrontImage'],
+      idCardBackImage: map['idCardBackImage'],
+      designation: map['designation'],
+      occupation: map['occupation'],
+    );
   }
 }
