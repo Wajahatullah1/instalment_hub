@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "139586112413",
+    "project_id": "instalmate-ffd13",
+    "storage_bucket": "instalmate-ffd13.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139586112413:android:62b804b9ec0f3f769cfd74",
+        "android_client_info": {
+          "package_name": "com.example.installment_hub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDCjqVvfn4fuDzFOFsZgI8s4gqe2N95b0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

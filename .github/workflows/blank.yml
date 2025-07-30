@@ -3,7 +3,7 @@ name: Build and Distribute Flutter APK
 on:
   push:
     branches:
-      - main  # or any branch you want to trigger this
+      - master # or any branch you want to trigger this
 
 jobs:
   build:
