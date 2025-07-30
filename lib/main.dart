@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:installment_hub/bloc/customer_bloc/customer_bloc.dart';
 import 'package:installment_hub/bloc/user_bloc/user_bloc.dart';
 import 'package:installment_hub/view/home_screen/homeScreen.dart';
+import 'package:installment_hub/view/introduction_screen/introduction_screen.dart';
 import 'package:installment_hub/view/login_screen/login_screen.dart';
 import 'package:installment_hub/view/signUp_screen/sign_up.dart';
 
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
         // create: (context)=>UserBloc(),
       ],
       child: GetMaterialApp(
+        builder: BotToastInit(),
         title: 'Flutter Demo',
         theme: ThemeData(
           // This is the theme of your application.
@@ -48,7 +51,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: false,
         ),
-        home: const LoginPage(),
+        home: const SplashScreen(),
       ),
     );
   }

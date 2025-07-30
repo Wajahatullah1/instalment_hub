@@ -1,17 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:installment_hub/bloc/customer_bloc/customer_bloc.dart';
-import 'package:installment_hub/bloc/customer_bloc/customer_event.dart';
 import 'package:installment_hub/bloc/customer_bloc/customer_state.dart';
 import 'package:installment_hub/constraints/app_materials/app_colors.dart';
-import 'package:installment_hub/constraints/app_materials/size.dart';
 import 'package:installment_hub/models/customers/customers.dart';
 import 'package:installment_hub/view/customers/add_customer/add_customer.dart';
 import 'package:installment_hub/view/customers/customer_detail/customer_detail_page.dart';
+import 'package:installment_hub/widgets/common/custom_app_bar.dart';
 import '../../../constraints/app_materials/media_query.dart';
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/top_app_bar.dart';
+import '../../../widgets/common/bottom_nav_bar.dart';
 
 class CustomerMainPage extends StatefulWidget {
   const CustomerMainPage({super.key});
@@ -31,7 +30,7 @@ class _CustomerMainPageState extends State<CustomerMainPage> {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              _buildHeader(mq),
+               const CustomAppBar(pageName: 'Customers'),
               _buildSearchBar(),
               Expanded(
                 child: Padding(
@@ -56,37 +55,31 @@ class _CustomerMainPageState extends State<CustomerMainPage> {
                   ),
                 ),
               ),
-              CustomButton(
-                title: 'Add New Customer',
-                onTap: () => Get.to(AddCusomers()),
-                isIconVisible: true,
-                isLoaderTrue: true,
-                color: Colors.blueAccent,
-                textColor: Colors.white,
-              ),
+
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'Add',
+        backgroundColor: AppColors().skyblue,
+        onPressed: () {
+          Get.to(AddCusomers());
+        },
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 0,
+        onTap: (int){
+
+        },
       ),
     );
   }
 }
 
-Widget _buildHeader(MediaQuerySize mq) {
-  return Container(
-    width: mq.width,
-    child: Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: mq.total * 0.05,
-        horizontal: mq.total * 0.01,
-      ),
-      child: const TopAppBar(
-        heading: 'Customers',
-        subTitle: 'Manage Your Customers here!',
-      ),
-    ),
-  );
-}
+
 
 Widget _buildSearchBar() {
   return Padding(
@@ -104,12 +97,25 @@ Widget _buildSearchBar() {
           )
         ],
       ),
-      child: TextField(
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: 'Search your customers here...',
-          prefixIcon: Icon(Icons.search, color: AppColors().blueColor),
-          contentPadding: EdgeInsets.symmetric(vertical: 15),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Search your customers here...',
+                  prefixIcon: Icon(Icons.search, color: AppColors().blueColor),
+                  contentPadding: EdgeInsets.symmetric(vertical: 15),
+                ),
+              ),
+            ),
+            CircleAvatar(
+              radius: 19,
+              child: Image.asset('assets/images/filter.png'),
+            )
+          ],
         ),
       ),
     ),
@@ -118,58 +124,107 @@ Widget _buildSearchBar() {
 
 Widget _buildCustomerCard(CustomerModel customer, MediaQuerySize mq) {
   return InkWell(
+    onTap: () => Get.to(CustomerDetailScreen(model: customer)),
     child: Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 8,),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blueAccent, AppColors().skyblue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.3),
+            color: Colors.black12,
             blurRadius: 10,
             offset: Offset(0, 4),
-          )
+          ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          /// Top Row: Name + Duration
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                customer.customerName,
-                style: TextStyle(
-                  fontSize: mq.total * 0.018,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+              /// Name & Location
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    customer.customerName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: mq.total * 0.018,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    customer.customerLocation,
+                    style: TextStyle(
+                      fontSize: mq.total * 0.014,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 5),
-              Text(
-                'Customer ID: ${customer.idCardNumber}',
-                style: TextStyle(
-                  fontSize: mq.total * 0.012,
-                  color: Colors.white70,
+
+              /// Duration Tag
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors().skyblue,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  children: [
+                     Icon(Icons.watch_later_outlined, color: AppColors().whiteColor, size: 16),
+                    const SizedBox(width: 4),
+                    Text(
+                      customer.plan,
+                      style:  TextStyle(
+                        color: AppColors().whiteColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          IconButton(
-            onPressed: () => Get.to(CustomerDetailScreen(model: customer,)),
-            icon: Icon(
-              Icons.arrow_forward_ios_outlined,
-              color: Colors.white,
-            ),
+
+          const SizedBox(height: 16),
+
+          /// Bottom Row: Financial Summary
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildAmountColumn("Total Buying", '4000'),
+              _buildAmountColumn("Paid", customer.advancePayment),
+              _buildAmountColumn("Unpaid", '3000'),
+            ],
           ),
         ],
       ),
     ),
-    onTap:()=>Get.to(CustomerDetailScreen(model: customer,)),
+  );
+}
+
+Widget _buildAmountColumn(String label, String amount) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+      const SizedBox(height: 4),
+      Text(
+        'PKR $amount',
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+          color: Colors.black87,
+        ),
+      ),
+    ],
   );
 }
